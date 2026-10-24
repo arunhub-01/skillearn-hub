@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Learn digital skills and discover opportunities with SkillEarn Hub.">
+  <title>SkillEarn Hub | Skills First, Honest Earning</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #0b1020;
+      color: #f5f7ff;
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      padding: 20px 7%;
+      border-bottom: 1px solid #28314a;
+    }
+    .logo { font-size: 22px; font-weight: bold; }
+    .logo span { color: #a78bfa; }
+    nav a {
+      color: #d5daea;
+      text-decoration: none;
+      margin-left: 18px;
+      font-size: 14px;
+    }
+    .hero {
+      padding: 75px 7% 55px;
+      text-align: center;
+      background: radial-gradient(ellipse at top, #30205d, #0b1020 70%);
+    }
+    .tag {
+      display: inline-block;
+      padding: 8px 14px;
+      border: 1px solid #57418c;
+      border-radius: 30px;
+      color: #d8c9ff;
+      font-size: 13px;
+    }
+    h1 { font-size: clamp(36px, 6vw, 60px); margin: 22px 0 14px; }
+    h1 span { color: #b69cff; }
+    .hero p {
+      max-width: 620px;
+      margin: 0 auto 26px;
+      line-height: 1.7;
+      color: #b8c0d8;
+    }
+    .btn {
+      display: inline-block;
+      padding: 13px 20px;
+      margin: 5px;
+      border-radius: 10px;
+      text-decoration: none;
+      font-weight: bold;
+      background: #8b5cf6;
+      color: white;
+    }
+    .btn.secondary { background: #1a2238; border: 1px solid #39435f; }
+    section { padding: 48px 7%; }
+    .section-title { text-align: center; margin-bottom: 28px; }
+    .section-title p { color: #aeb7cf; }
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 18px;
+    }
+    .card {
+      background: #121a2e;
+      border: 1px solid #283550;
+      border-radius: 16px;
+      padding: 23px;
+    }
+    .card .emoji { font-size: 30px; }
+    .card h3 { margin-bottom: 10px; }
+    .card p { color: #b8c0d8; line-height: 1.6; font-size: 14px; }
+    .card a { color: #c4b5fd; text-decoration: none; }
+    .note {
+      text-align: center;
+      color: #aeb7cf;
+      font-size: 13px;
+      line-height: 1.7;
+    }
+    footer {
+      border-top: 1px solid #28314a;
+      padding: 25px 7%;
+      text-align: center;
+      color: #aeb7cf;
+      font-size: 13px;
+    }
+    @media (max-width: 600px) {
+      header { flex-direction: column; }
+      nav a { margin: 0 7px; }
+      .hero { padding-top: 55px; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">SkillEarn <span>Hub</span></div>
+    <nav>
+      <a href="#learn">Learn</a>
+      <a href="#practice">Practice</a>
+      <a href="#jobs">Opportunities</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="tag">Learn skills. Build your future.</div>
+      <h1>Your Skills.<br><span>Your Future.</span></h1>
+      <p>Learn useful digital skills, practise with simple projects, and explore opportunities to put your skills to work.</p>
+      <a class="btn" href="#learn">Explore Skills</a>
+      <a class="btn secondary" href="#practice">Start Practising</a>
+    </section>
+
+    <section id="learn">
+      <div class="section-title">
+        <h2>Learn New Skills</h2>
+        <p>Start with the basics and grow at your own pace.</p>
+      </div>
+      <div class="cards">
+        <article class="card">
+          <div class="emoji">💻</div>
+          <h3>Web Design</h3>
+          <p>Learn how websites are built using HTML, CSS and responsive layouts.</p>
+          <a href="#practice">Explore learning →</a>
+        </article>
+        <article class="card">
+          <div class="emoji">🎬</div>
+          <h3>Video Editing</h3>
+          <p>Practise editing short videos, adding captions and creating engaging content.</p>
+          <a href="#practice">Explore learning →</a>
+        </article>
+        <article class="card">
+          <div class="emoji">📊</div>
+          <h3>Excel & Data Entry</h3>
+          <p>Build spreadsheet skills through organised, practical exercises.</p>
+          <a href="#practice">Explore learning →</a>
+        </article>
+      </div>
+    </section>
+
+    <section id="practice">
+      <div class="section-title">
+        <h2>Practice & Build</h2>
+        <p>Turn what you learn into projects you can show others.</p>
+      </div>
+      <div class="cards">
+        <article class="card">
+          <h3>Beginner Projects</h3>
+          <p>Create a personal portfolio, a sample business website or a simple spreadsheet.</p>
+        </article>
+        <article class="card">
+          <h3>Portfolio Building</h3>
+          <p>Collect your best practice projects and explain what you created.</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="jobs">
+      <div class="section-title">
+        <h2>Explore Opportunities</h2>
+        <p>Prepare for freelance projects and entry-level work.</p>
+      </div>
+      <div class="cards">
+        <article class="card">
+          <h3>Freelance Projects</h3>
+          <p>Build a portfolio before approaching clients. Check project details and payment terms carefully.</p>
+        </article>
+        <article class="card">
+          <h3>Job Preparation</h3>
+          <p>Improve your CV, practise communication and verify job offers before sharing personal information.</p>
+        </article>
+      </div>
+      <p class="note">SkillEarn Hub is a learning demo. No jobs, earnings or paid opportunities are guaranteed.</p>
+    </section>
+  </main>
+
+  <footer>
+    © 2026 SkillEarn Hub · Skills first. Honest earning.
+  </footer>
+</body>
+</html>
