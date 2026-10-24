@@ -317,7 +317,18 @@
       <strong>🎯 Your Practice Task</strong>
       <p id="lessonTask" class="lesson-desc"></p>
     </div>
+<div id="quizBox" class="lesson-desc">
+  <h3>🧠 Quick Quiz</h3>
+  <p id="quizQuestion">Lesson complete karne ke baad quiz try karo.</p>
 
+  <div id="quizOptions"></div>
+
+  <p id="quizFeedback" aria-live="polite"></p>
+
+  <button id="quizCheck" class="lesson-next" type="button">
+    Check Answer
+  </button>
+</div>
     <div class="lesson-actions">
       <button id="lessonPrev" class="lesson-prev">← Previous</button>
       <button id="lessonNext" class="lesson-next">Next Lesson →</button>
@@ -457,11 +468,127 @@
   const fill = document.getElementById("lessonProgressFill");
   const prev = document.getElementById("lessonPrev");
   const next = document.getElementById("lessonNext");
+const quizQuestion = document.getElementById("quizQuestion");
+  const quizOptions = document.getElementById("quizOptions");
+  const quizFeedback = document.getElementById("quizFeedback");
+  const quizCheck = document.getElementById("quizCheck");
 
+  let selectedAnswer = null;
+  let quizScore = 0;
   let activeCourse = [];
   let activeName = "";
   let index = 0;
+const quizData = {
+    "Web Design": [
+      {
+        question: "HTML ka use kis liye hota hai?",
+        options: ["Website structure", "Video editing", "Calculations", "Audio recording"],
+        answer: 0
+      },
+      {
+        question: "CSS ka use kis liye hota hai?",
+        options: ["Files delete karne", "Website styling", "Emails bhejne", "Data calculate karne"],
+        answer: 1
+      }
+    ],
+    "Video Editing": [
+      {
+        question: "Timeline ka use kis liye hota hai?",
+        options: ["Clips arrange karne", "Password banane", "Spreadsheet banane", "Website host karne"],
+        answer: 0
+      }
+    ],
+    "Excel & Data Entry": [
+      {
+        question: "SUM formula kya karta hai?",
+        options: ["Average nikalta hai", "Total nikalta hai", "Text colour badalta hai", "Rows delete karta hai"],
+        answer: 1
+      }
+    ]
+  };
 
+  let currentQuestion = 0;
+  let currentQuiz = [];
+  function renderQuiz() {
+    currentQuiz = quizData[activeName] || [];
+    currentQuestion = 0;
+    quizScore = 0;
+    selectedAnswer = null;
+    showQuestion();
+  }
+
+  function showQuestion() {
+    if (!currentQuiz.length) {
+      quizQuestion.textContent = "Is skill ka quiz jald aayega.";
+      quizOptions.innerHTML = "";
+      quizFeedback.textContent = "";
+      quizCheck.style.display = "none";
+      return;
+    }
+
+    const q = currentQuiz[currentQuestion];
+    quizQuestion.textContent = q.question;
+    quizOptions.innerHTML = "";
+    quizFeedback.textContent = "";
+    quizCheck.style.display = "inline-block";
+    selectedAnswer = null;
+
+    q.options.forEach(function(option, i) {
+      const label = document.createElement("label");
+      label.style.display = "block";
+      label.style.margin = "8px 0";
+
+      const radio = document.createElement("input");
+      radio.type = "radio";
+      radio.name = "quizAnswer";
+      radio.value = i;
+      radio.style.marginRight = "8px";
+
+      radio.addEventListener("change", function() {
+        selectedAnswer = i;
+      });
+
+      label.appendChild(radio);
+      label.appendChild(document.createTextNode(option));
+      quizOptions.appendChild(label);
+    });
+
+    quizCheck.textContent = "Check Answer";
+  }
+
+  quizCheck.addEventListener("click", function() {
+    if (selectedAnswer === null) {
+      quizFeedback.textContent = "Pehle ek answer select karo.";
+      return;
+    }
+
+    const q = currentQuiz[currentQuestion];
+
+    if (selectedAnswer === q.answer) {
+      quizScore++;
+      quizFeedback.textContent = "Sahi jawab! 🎉";
+    } else {
+      quizFeedback.textContent = "Galat jawab. Sahi answer: " + q.options[q.answer];
+    }
+
+    quizCheck.disabled = true;
+
+    setTimeout(function() {
+      currentQuestion++;
+
+      if (currentQuestion < currentQuiz.length) {
+        showQuestion();
+      } else {
+        quizQuestion.textContent = "Quiz complete!";
+        quizOptions.innerHTML = "";
+        quizFeedback.textContent =
+          "Tumhara score: " + quizScore + " / " + currentQuiz.length;
+        quizCheck.style.display = "none";
+      }
+
+      quizCheck.disabled = false;
+    }, 1200);
+  });
   function renderLesson() {
     const lesson = activeCourse[index];
     title.textContent = activeName + " — " + lesson.title;
@@ -472,6 +599,7 @@
     prev.disabled = index === 0;
     next.textContent = index === activeCourse.length - 1
       ? "Finish ✓" : "Next Lesson →";
+    renderQuiz();
   }
 
   function closePopup() {
