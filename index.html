@@ -184,35 +184,353 @@
   <footer>
     © 2026 SkillEarn Hub · Skills first. Honest earning.
   </footer>
-  <div id="lessonPopup" style="display:none;position:fixed;inset:0;background:#080c18ee;z-index:9999;align-items:center;justify-content:center;padding:20px;">
-  <div style="background:#121a2e;border:1px solid #8b5cf6;border-radius:16px;padding:24px;max-width:450px;width:100%;color:#f5f7ff;">
-    <h2 id="lessonTitle">Lesson</h2>
-    <p id="lessonText" style="line-height:1.8;color:#c5cce0;white-space:pre-line;"></p>
-    <button onclick="document.getElementById('lessonPopup').style.display='none'" style="background:#8b5cf6;color:white;border:0;padding:12px 18px;border-radius:9px;font-weight:bold;">Close</button>
+  <style>
+  #lessonPopup {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: rgba(3, 6, 18, .88);
+    backdrop-filter: blur(9px);
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+  }
+  #lessonPopup .lesson-box {
+    width: 100%;
+    max-width: 620px;
+    max-height: 88vh;
+    overflow-y: auto;
+    position: relative;
+    padding: 26px;
+    border: 1px solid #6750a4;
+    border-radius: 22px;
+    background: linear-gradient(145deg, #1b2340, #101426 75%);
+    box-shadow: 0 24px 80px #0009;
+    color: #f5f7ff;
+  }
+  #lessonPopup .lesson-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+  }
+  #lessonPopup .lesson-label {
+    color: #c4b5fd;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+  }
+  #lessonPopup .lesson-close {
+    background: #29314d;
+    color: white;
+    border: 1px solid #485171;
+    border-radius: 10px;
+    padding: 8px 12px;
+    cursor: pointer;
+  }
+  #lessonPopup h2 {
+    font-size: clamp(24px, 5vw, 32px);
+    margin: 18px 0 8px;
+  }
+  #lessonPopup .lesson-desc {
+    color: #c2cbe0;
+    line-height: 1.8;
+    white-space: pre-line;
+  }
+  #lessonPopup .lesson-task {
+    margin-top: 20px;
+    padding: 17px;
+    border: 1px solid #51417d;
+    border-radius: 14px;
+    background: #241d40;
+    line-height: 1.7;
+  }
+  #lessonPopup .lesson-task strong {
+    color: #d7c8ff;
+  }
+  #lessonPopup .lesson-progress {
+    height: 6px;
+    margin: 14px 0 8px;
+    border-radius: 20px;
+    background: #303954;
+    overflow: hidden;
+  }
+  #lessonPopup .lesson-progress-fill {
+    height: 100%;
+    width: 0;
+    background: linear-gradient(90deg, #8b5cf6, #c4b5fd);
+    transition: width .25s;
+  }
+  #lessonPopup .lesson-count {
+    color: #aeb7cf;
+    font-size: 13px;
+  }
+  #lessonPopup .lesson-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 22px;
+  }
+  #lessonPopup .lesson-actions button {
+    flex: 1;
+    border: 0;
+    border-radius: 11px;
+    padding: 13px 10px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  #lessonPopup .lesson-prev {
+    color: white;
+    background: #29314d;
+    border: 1px solid #485171 !important;
+  }
+  #lessonPopup .lesson-next {
+    color: white;
+    background: #8b5cf6;
+  }
+  #lessonPopup button:disabled {
+    opacity: .4;
+    cursor: not-allowed;
+  }
+  @media(max-width:480px) {
+    #lessonPopup .lesson-box { padding: 20px; }
+  }
+</style>
+
+<div id="lessonPopup" role="dialog" aria-modal="true"
+     aria-labelledby="lessonTitle">
+  <div class="lesson-box">
+    <div class="lesson-top">
+      <span class="lesson-label">SkillEarn Hub • Learning Studio</span>
+      <button class="lesson-close" id="lessonClose">✕ Close</button>
+    </div>
+
+    <h2 id="lessonTitle">Welcome to learning</h2>
+    <p id="lessonIntro" class="lesson-desc"></p>
+
+    <div class="lesson-progress">
+      <div id="lessonProgressFill" class="lesson-progress-fill"></div>
+    </div>
+    <div id="lessonCount" class="lesson-count"></div>
+
+    <div class="lesson-task">
+      <strong>🎯 Your Practice Task</strong>
+      <p id="lessonTask" class="lesson-desc"></p>
+    </div>
+
+    <div class="lesson-actions">
+      <button id="lessonPrev" class="lesson-prev">← Previous</button>
+      <button id="lessonNext" class="lesson-next">Next Lesson →</button>
+    </div>
   </div>
 </div>
 
 <script>
-document.querySelectorAll('.card a[href="#practice"]').forEach(function(link) {
-  link.addEventListener('click', function(event) {
-    event.preventDefault();
+(function () {
+  const courses = {
+    "Web Design": [
+      {
+        title: "Lesson 1: HTML Basics",
+        text: "HTML website ka structure banata hai. Headings ke liye h1 aur paragraphs ke liye p tag use hota hai.",
+        task: "Ek HTML page banao jisme tumhara naam heading mein aur ek introduction paragraph ho."
+      },
+      {
+        title: "Lesson 2: Links and Images",
+        text: "a tag links banata hai aur img tag images dikhata hai. Images mein alt text bhi dena chahiye.",
+        task: "Apne page mein ek useful website ka link aur ek image add karo."
+      },
+      {
+        title: "Lesson 3: CSS Styling",
+        text: "CSS se colours, spacing, fonts aur layout badalte hain. Class selector ko dot se likhte hain, jaise .card.",
+        task: "Apni heading ka colour badlo aur paragraph ke liye readable font size set karo."
+      }
+    ],
+    "Video Editing": [
+      {
+        title: "Lesson 1: Timeline Basics",
+        text: "Timeline par video clips arrange hote hain. Split, trim aur delete se unwanted parts hata sakte ho.",
+        task: "3 short clips import karke sequence mein lagao aur extra portions trim karo."
+      },
+      {
+        title: "Lesson 2: Captions and Audio",
+        text: "Readable captions aur balanced audio video ko samajhna easy banate hain. Music ko voice se zyada loud mat rakho.",
+        task: "15-second video mein captions add karo aur music ka volume adjust karo."
+      },
+      {
+        title: "Lesson 3: Reels Export",
+        text: "Vertical reels ke liye 9:16 aspect ratio aam taur par use hota hai. Export ke baad video check karna zaroori hai.",
+        task: "Ek short vertical edit export karo aur text, audio aur quality check karo."
+      }
+    ],
+    "Excel & Data Entry": [
+      {
+        title: "Lesson 1: Spreadsheet Basics",
+        text: "Rows horizontal, columns vertical aur cells unke intersections hote hain. Har column ko clear heading do.",
+        task: "Name, Department aur Salary headings ke saath 5 sample rows banao."
+      },
+      {
+        title: "Lesson 2: Useful Formulas",
+        text: "SUM numbers ka total nikalta hai. AVERAGE average, MAX sabse badi aur MIN sabse chhoti value deta hai.",
+        task: "5 sample salary values ka total aur average nikalne ke liye formulas lagao."
+      },
+      {
+        title: "Lesson 3: Sort and Filter",
+        text: "Sort data ko order mein arrange karta hai. Filter sirf tumhari selected condition se match hone wali rows dikhata hai.",
+        task: "Apni table ko salary ke highest-to-lowest order mein sort karo aur ek department filter karo."
+      }
+    ],
+    "AI Tools": [
+      {
+        title: "Lesson 1: Better Prompts",
+        text: "Achhe prompt mein goal, context aur desired output clear hota hai. Zarurat ho toh example bhi do.",
+        task: "AI se beginner video editor ke liye 7-day learning plan maango. Prompt ko specific banao."
+      },
+      {
+        title: "Lesson 2: Research with AI",
+        text: "AI ideas organize karne aur concepts samajhne mein help karta hai. Important facts ko reliable sources se verify karo.",
+        task: "Kisi digital skill par 5 learning topics ki list banwao aur unhe verify karo."
+      },
+      {
+        title: "Lesson 3: Responsible AI Use",
+        text: "Passwords, private documents aur sensitive personal data public AI tools mein share mat karo. AI output ko review karo.",
+        task: "AI se ek professional client message ka draft banwao aur usse khud review karke improve karo."
+      }
+    ],
+    "Graphic Design": [
+      {
+        title: "Lesson 1: Design Basics",
+        text: "Contrast, alignment, spacing aur visual hierarchy design ko clear banate hain. Bahut saare fonts ek saath use na karo.",
+        task: "Ek simple poster banao jisme ek heading, short message aur clear visual hierarchy ho."
+      },
+      {
+        title: "Lesson 2: Colour and Typography",
+        text: "Readable text aur matching colours design ko professional banate hain. Text aur background mein enough contrast rakho.",
+        task: "Ek poster ke liye 2 matching colours aur maximum 2 fonts choose karo."
+      },
+      {
+        title: "Lesson 3: Social Media Post",
+        text: "Post banate waqt platform ka size, text readability aur safe margins check karo.",
+        task: "Ek skill-learning tip ke liye social media post design karo aur spelling check karo."
+      }
+    ],
+    "Web Development": [
+      {
+        title: "Lesson 1: HTML Structure",
+        text: "HTML content ka structure banata hai. head mein metadata aur body mein visible page content hota hai.",
+        task: "Ek valid HTML document banao jisme title, heading aur paragraph ho."
+      },
+      {
+        title: "Lesson 2: Responsive CSS",
+        text: "Responsive design screen size ke hisaab se layout adjust karta hai. Flexible grids aur media queries useful hain.",
+        task: "3 cards ka grid banao jo narrow mobile screen par ek column mein aa jaye."
+      },
+      {
+        title: "Lesson 3: Website Project",
+        text: "Ek achhi website mein clear navigation, readable content aur working links hote hain. Har change ke baad test karo.",
+        task: "Ek simple business landing page banao aur mobile par uske links test karo."
+      }
+    ],
+    "Freelancing": [
+      {
+        title: "Lesson 1: Choose a Service",
+        text: "Ek clear service choose karo, jaise reels editing, poster design ya basic business website. Apni skills ke baare mein honest raho.",
+        task: "Apni ek service, ideal client aur client ki problem ek-ek sentence mein likho."
+      },
+      {
+        title: "Lesson 2: Build a Portfolio",
+        text: "Portfolio mein apne best sample projects aur har project ka short explanation dikhana chahiye.",
+        task: "Apni chosen service ke 3 sample projects ki list banao."
+      },
+      {
+        title: "Lesson 3: Client Communication",
+        text: "Client se scope, deadline, revisions aur payment terms pehle discuss karo. Guaranteed income ka claim mat karo.",
+        task: "Ek polite message draft karo jisme apni service aur sample work share karne ki offer ho."
+      }
+    ]
+  };
 
-    const card = link.closest('.card');
-    const skill = card.querySelector('h3').textContent;
+  const popup = document.getElementById("lessonPopup");
+  const title = document.getElementById("lessonTitle");
+  const intro = document.getElementById("lessonIntro");
+  const task = document.getElementById("lessonTask");
+  const count = document.getElementById("lessonCount");
+  const fill = document.getElementById("lessonProgressFill");
+  const prev = document.getElementById("lessonPrev");
+  const next = document.getElementById("lessonNext");
 
-    const lessons = {
-      "Web Design": "Lesson 1: HTML Basics\n\nHTML website ka structure banata hai.\n\nPractice: Ek heading aur ek paragraph wali webpage banao.",
-      "Video Editing": "Lesson 1: Editing Basics\n\nTimeline, cuts, captions aur transitions seekho.\n\nPractice: 15-second video mein 3 clips jodo aur captions add karo.",
-      "Excel & Data Entry": "Lesson 1: Spreadsheet Basics\n\nRows, columns aur cells ko samjho.\n\nPractice: Excel mein Name, Task aur Status ke columns banao."
-    };
+  let activeCourse = [];
+  let activeName = "";
+  let index = 0;
 
-    document.getElementById('lessonTitle').textContent = skill;
-    document.getElementById('lessonText').textContent =
-      lessons[skill] || "Is skill ke lessons jald add honge.";
+  function renderLesson() {
+    const lesson = activeCourse[index];
+    title.textContent = activeName + " — " + lesson.title;
+    intro.textContent = lesson.text;
+    task.textContent = lesson.task;
+    count.textContent = "Lesson " + (index + 1) + " of " + activeCourse.length;
+    fill.style.width = ((index + 1) / activeCourse.length * 100) + "%";
+    prev.disabled = index === 0;
+    next.textContent = index === activeCourse.length - 1
+      ? "Finish ✓" : "Next Lesson →";
+  }
 
-    document.getElementById('lessonPopup').style.display = 'flex';
+  function closePopup() {
+    popup.style.display = "none";
+  }
+
+  document.querySelectorAll('.card a[href="#practice"]').forEach(function(link) {
+    link.addEventListener("click", function(event) {
+      event.preventDefault();
+
+      const card = link.closest(".card");
+      const cardTitle = card.querySelector("h3");
+      const name = cardTitle ? cardTitle.textContent.trim() : "";
+      let courseKey = name;
+
+      if (name.includes("Excel") || name.includes("Data Entry")) {
+        courseKey = "Excel & Data Entry";
+      } else if (name.includes("Web Design")) {
+        courseKey = "Web Design";
+      }
+
+      activeName = courseKey;
+      activeCourse = courses[courseKey] || [{
+        title: "Coming Soon",
+        text: "Is skill ke lessons jald add honge.",
+        task: "Apna learning goal likho aur practice ke liye ek chhota project plan karo."
+      }];
+      index = 0;
+      renderLesson();
+      popup.style.display = "flex";
+    });
   });
-});
+
+  prev.addEventListener("click", function() {
+    if (index > 0) {
+      index--;
+      renderLesson();
+    }
+  });
+
+  next.addEventListener("click", function() {
+    if (index < activeCourse.length - 1) {
+      index++;
+      renderLesson();
+    } else {
+      closePopup();
+    }
+  });
+
+  document.getElementById("lessonClose").addEventListener("click", closePopup);
+
+  popup.addEventListener("click", function(event) {
+    if (event.target === popup) closePopup();
+  });
+
+  document.addEventListener("keydown", function(event) {
+    if (event.key === "Escape") closePopup();
+  });
+})();
 </script>
 </body>
 </html>
