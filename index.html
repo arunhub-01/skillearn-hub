@@ -742,13 +742,23 @@ const quizQuestion = document.getElementById("quizQuestion");
       const card = link.closest(".card");
       const cardTitle = card.querySelector("h3");
       const name = cardTitle ? cardTitle.textContent.trim() : "";
-      let courseKey = name;
+     let courseKey = name;
 
-      if (name.includes("Excel") || name.includes("Data Entry")) {
-        courseKey = "Excel & Data Entry";
-      } else if (name.includes("Web Design")) {
-        courseKey = "Web Design";
-      }
+if (name.includes("Excel") || name.includes("Data Entry")) {
+  courseKey = "Excel & Data Entry";
+} else if (name.includes("Web Design")) {
+  courseKey = "Web Design";
+} else if (name.includes("Video Editing")) {
+  courseKey = "Video Editing";
+} else if (name.includes("AI Tools")) {
+  courseKey = "AI Tools";
+} else if (name.includes("Graphic Design")) {
+  courseKey = "Graphic Design";
+} else if (name.includes("Web Development")) {
+  courseKey = "Web Development";
+} else if (name.includes("Freelancing")) {
+  courseKey = "Freelancing";
+}
 
       activeName = courseKey;
       activeCourse = courses[courseKey] || [{
